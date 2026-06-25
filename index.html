@@ -176,6 +176,47 @@ select:focus,input:focus{border-color:var(--blue)}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 16px;border-radius:var(--rs);font-size:12px;font-weight:500;opacity:0;transform:translateY(6px);transition:all .22s;pointer-events:none;z-index:400}
 .toast.show{opacity:1;transform:translateY(0)}
 
+
+/* ── BANNER ALERTAS ── */
+.alert-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:18px;display:flex;align-items:flex-start;gap:12px}
+.alert-banner.warn{border-left:4px solid #D97706;background:#FFFBEB}
+.alert-banner.red{border-left:4px solid #DC2626;background:#FEF2F2}
+.alert-banner.green{border-left:4px solid #16A34A;background:#F0FDF4}
+.alert-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
+.alert-sub{font-size:11px;color:var(--text2);line-height:1.5}
+.alert-cards{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.alert-card-tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;cursor:pointer;border:none;font-family:inherit;transition:opacity .12s}
+.alert-card-tag:hover{opacity:.8}
+
+/* ── ATUALIZAÇÃO RÁPIDA ── */
+.quick-update-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:18px}
+.quick-update-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.quick-update-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;align-items:end}
+.quick-update-grid label{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;display:block}
+.quick-btn{padding:8px 14px;background:var(--green);color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;height:34px}
+.quick-btn:hover{opacity:.88}
+@media(max-width:700px){.quick-update-grid{grid-template-columns:1fr 1fr}}
+
+
+/* ── CONTAS RÁPIDAS ── */
+.contas-rapidas{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:16px}
+.contas-rapidas-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.contas-rapidas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.conta-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.conta-card-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.conta-card-info{flex:1;min-width:0}
+.conta-card-nome{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conta-card-val{font-size:11px;color:var(--text3);margin-top:1px}
+.conta-input-wrap{display:flex;gap:6px;margin-top:6px}
+.conta-input-wrap input{font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--rxs);width:100%;outline:none;font-family:inherit;background:var(--surface)}
+.conta-input-wrap input:focus{border-color:var(--blue)}
+.conta-save-btn{padding:5px 10px;background:var(--green);color:#fff;border:none;border-radius:var(--rxs);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.conta-save-btn:hover{opacity:.88}
+.conta-pago-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;color:var(--text3)}
+.conta-pago-btn.pago{border-color:var(--green);color:var(--green);background:var(--green-bg)}
+.conta-pago-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5}
+
 /* ── ESTRATÉGIA ── */
 .strat-hero{background:linear-gradient(135deg,#0F172A 0%,#1E3A5F 60%,#0D9488 100%);border-radius:14px;padding:28px 32px;margin-bottom:20px;color:#fff;position:relative;overflow:hidden}
 .strat-hero::before{content:'🚴';position:absolute;right:32px;top:50%;transform:translateY(-50%);font-size:72px;opacity:.15}
@@ -277,12 +318,41 @@ select:focus,input:focus{border-color:var(--blue)}
 
 <div class="main">
 
-  <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-inp').click()" ondragover="doDrag(event,true)" ondragleave="doDrag(event,false)" ondrop="doDrop(event)">
-    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-    <div class="upload-main">Arraste arquivos ou clique para selecionar</div>
-    <div class="upload-sub">PDF de fatura ou conta · Foto de cupom (JPG/PNG) · Planilha Excel (xlsx)</div>
+  <!-- BANNER DE ALERTAS -->
+  <div id="alert-banner-area"></div>
+
+  <!-- ATUALIZAÇÃO RÁPIDA -->
+  <div class="quick-update-bar">
+    <div class="quick-update-title">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      ⚡ Atualização rápida de fatura
+    </div>
+    <div class="quick-update-grid">
+      <div>
+        <label>Cartão</label>
+        <select id="q-banco" onchange="quickPreencheCartao()">
+          <option value="">Selecione o cartão...</option>
+        </select>
+      </div>
+      <div>
+        <label>Valor (R$)</label>
+        <input type="number" id="q-valor" placeholder="0,00" step="0.01" min="0">
+      </div>
+      <div>
+        <label>Vencimento</label>
+        <input type="date" id="q-venc">
+      </div>
+      <div>
+        <label>Parcelado futuro (R$)</label>
+        <input type="number" id="q-parcelado" placeholder="0,00" step="0.01" min="0">
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button class="quick-btn" onclick="quickSalvar()">✓ Salvar</button>
+      </div>
+    </div>
+    <div id="q-preview" style="margin-top:8px;font-size:11px;color:var(--text3)"></div>
   </div>
-  <input type="file" id="file-inp" accept=".pdf,.jpg,.jpeg,.png,.xlsx" multiple onchange="doFiles(this.files)">
 
   <div class="crono-card">
     <div class="crono-header">
@@ -450,14 +520,27 @@ select:focus,input:focus{border-color:var(--blue)}
         <div class="chart-wrap"><canvas id="barFinanceiro"></canvas></div>
       </div>
     </div>
+    <!-- CONTAS RÁPIDAS: energia, água, etc -->
+    <div class="contas-rapidas">
+      <div class="contas-rapidas-title">
+        <span style="display:flex;align-items:center;gap:6px">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Contas mensais — atualização rápida
+        </span>
+        <span style="font-size:10px;color:var(--text3);font-weight:400">Digite o valor e clique ✓ para salvar</span>
+      </div>
+      <div class="contas-rapidas-grid" id="contas-rapidas-grid"></div>
+    </div>
+
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div class="section-header" style="margin-bottom:0">
         <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
-        Despesas do mês selecionado
+        Todas as despesas do mês
       </div>
       <button class="add-btn" onclick="toggleDespForm()" id="desp-toggle-btn">+ Nova despesa</button>
     </div>
     <div id="desp-form" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:12px">Nova despesa</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
         <div><label class="flbl">Nome / Descrição</label><input type="text" id="d-nome" placeholder="Ex: Conta de energia"></div>
         <div><label class="flbl">Categoria</label>
@@ -1457,8 +1540,122 @@ function renderImovels(){
 
 function getParcAtualNoMes(d,mIdx){ if(!d.parcTotal||!d.mes) return null; const startIdx=MESES.indexOf(d.mes); const diffMeses=(mIdx!==undefined?mIdx:MESES.indexOf(mesSelecionado))-startIdx; const pa=(d.parcAtual||1)+diffMeses; return pa>d.parcTotal?null:pa; }
 
+
+/* ══ CONTAS RÁPIDAS (energia, água, etc) ══ */
+const CAT_ICONS = {
+  'Energia Elétrica':'⚡','Água':'💧','Internet':'🌐','Telefone':'📱',
+  'Imóvel / Prestação':'🏠','Consórcio':'🚗','Escola / Educação':'📚','Educação':'📚',
+  'Saúde / Plano':'❤️','Seguro':'🛡️','Aluguel':'🔑','Condomínio':'🏢',
+  'Streaming':'🎬','Transporte':'🚌','Outros':'📋'
+};
+const CAT_BG = {
+  'Energia Elétrica':'#FEF9C3','Água':'#DBEAFE','Internet':'#EDE9FE','Telefone':'#FCE7F3',
+  'Imóvel / Prestação':'#DBEAFE','Consórcio':'#EDE9FE','Escola / Educação':'#D1FAE5','Educação':'#D1FAE5',
+  'Saúde / Plano':'#FEE2E2','Seguro':'#FEF3C7','Aluguel':'#CFFAFE','Condomínio':'#E0E7FF',
+  'Streaming':'#FFE4E6','Transporte':'#ECFCCB','Outros':'#F3F4F6'
+};
+
+function renderContasRapidas(){
+  const grid = document.getElementById('contas-rapidas-grid');
+  if(!grid) return;
+
+  // Filtra despesas mensais recorrentes que fazem sentido exibir como "conta"
+  const CATS_RAPIDAS = ['Energia Elétrica','Água','Internet','Telefone','Streaming','Saúde / Plano','Seguro','Condomínio','Outros'];
+  const contas = despesas.filter(d => d.rec === 'mensal' && CATS_RAPIDAS.includes(d.cat));
+
+  const pago = (d) => isDespPago(d, mesSelecionado);
+
+  let html = contas.map(d => {
+    const ico = CAT_ICONS[d.cat] || '📋';
+    const bg  = CAT_BG[d.cat]   || '#F3F4F6';
+    const pg  = pago(d);
+    return `<div class="conta-card" id="conta-card-${d.id}">
+      <div class="conta-card-ico" style="background:${bg}">${ico}</div>
+      <div class="conta-card-info">
+        <div class="conta-card-nome">${d.nome}</div>
+        <div class="conta-card-val">Último: ${fmt(d.valor)} · dia ${d.dia}</div>
+        <div class="conta-input-wrap">
+          <input type="number" id="cv-${d.id}" placeholder="${d.valor}" step="0.01" min="0" value="${d.valor}" style="${pg?'opacity:.5':''}" ${pg?'disabled':''}>
+          <button class="conta-save-btn" onclick="contaSalvar(${d.id})" ${pg?'disabled style="opacity:.5"':''}>✓</button>
+        </div>
+      </div>
+      <button class="conta-pago-btn ${pg?'pago':''}" onclick="toggleDespPago(${d.id},'${mesSelecionado}')" title="${pg?'Reabrir':'Marcar paga'}">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>`;
+  }).join('');
+
+  // Botão para adicionar nova conta rápida
+  html += `<div class="conta-card" style="border:1.5px dashed var(--border2);background:transparent;cursor:pointer;justify-content:center;flex-direction:column;text-align:center;gap:4px;min-height:80px" onclick="toggleDespForm();window.scrollTo({top:document.getElementById('desp-form').offsetTop-20,behavior:'smooth'})">
+    <div style="font-size:22px">＋</div>
+    <div style="font-size:11px;font-weight:600;color:var(--text3)">Nova conta</div>
+  </div>`;
+
+  grid.innerHTML = html;
+}
+
+function contaSalvar(id){
+  const d = despesas.find(x=>x.id===id); if(!d) return;
+  const inp = document.getElementById('cv-'+id);
+  if(!inp) return;
+  const novoValor = parseFloat(inp.value);
+  if(!novoValor || novoValor<=0){ showToast('Digite um valor válido.'); return; }
+  d.valor = novoValor;
+  saveDespesas();
+  renderFinanceiro();
+  showToast('✓ '+d.nome+' atualizado para '+fmt(novoValor)+'!');
+}
+
+function openEditDespesa(id){
+  const d = despesas.find(x=>x.id===id); if(!d) return;
+  const MESES_OPT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('modal-inner').innerHTML = `
+    <div class="modal-head">
+      <div style="font-size:20px">${CAT_ICONS[d.cat]||'📋'}</div>
+      <div style="flex:1;margin-left:10px">
+        <div class="modal-title">Editar despesa</div>
+        <div class="modal-sub">${d.cat}</div>
+      </div>
+      <button class="xbtn" onclick="document.getElementById('modal-bg').classList.remove('open')">×</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div><label class="flbl">Nome</label><input type="text" id="ed-nome" value="${d.nome}"></div>
+      <div><label class="flbl">Categoria</label>
+        <select id="ed-cat">
+          ${['Energia Elétrica','Água','Internet','Telefone','Imóvel / Prestação','Consórcio','Escola / Educação','Educação','Saúde / Plano','Seguro','Aluguel','Condomínio','Streaming','Transporte','Outros'].map(c=>`<option${c===d.cat?' selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div><label class="flbl">Valor (R$)</label><input type="number" id="ed-valor" value="${d.valor}" step="0.01"></div>
+      <div><label class="flbl">Dia de vencimento</label><input type="number" id="ed-dia" value="${d.dia}" min="1" max="31"></div>
+      <div><label class="flbl">Fornecedor / Obs</label><input type="text" id="ed-obs" value="${d.obs||''}"></div>
+      <div><label class="flbl">Recorrência</label>
+        <select id="ed-rec">
+          <option value="mensal"${d.rec==='mensal'?' selected':''}>Mensal</option>
+          <option value="anual"${d.rec==='anual'?' selected':''}>Anual</option>
+          <option value="unica"${d.rec==='unica'?' selected':''}>Única</option>
+        </select>
+      </div>
+    </div>
+    <button class="modal-pay-btn" style="background:var(--blue)" onclick="saveEditDespesa(${id})">💾 Salvar alterações</button>
+  `;
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function saveEditDespesa(id){
+  const d = despesas.find(x=>x.id===id); if(!d) return;
+  d.nome  = document.getElementById('ed-nome').value  || d.nome;
+  d.cat   = document.getElementById('ed-cat').value   || d.cat;
+  d.valor = parseFloat(document.getElementById('ed-valor').value) || d.valor;
+  d.dia   = parseInt(document.getElementById('ed-dia').value)     || d.dia;
+  d.obs   = document.getElementById('ed-obs').value;
+  d.rec   = document.getElementById('ed-rec').value;
+  saveDespesas(); renderFinanceiro();
+  document.getElementById('modal-bg').classList.remove('open');
+  showToast('✓ Despesa atualizada!');
+}
+
 function renderFinanceiro(){
-  renderMesPills(); renderImovels();
+  renderMesPills(); renderImovels(); renderContasRapidas();
   const mesIdx=MESES.indexOf(mesSelecionado), junIdx=MESES.indexOf('Junho');
   const globalMesIdx=(anoSelecionado-ANO_ATUAL)*12+mesIdx, globalJunIdx=5;
   const despMes=despesas.filter(d=>{ if(d.rec==='unica') return d.mes===mesSelecionado; if(d.rec==='anual') return d.mes===mesSelecionado; if(d.rec==='mensal'){ if(d.parcRest!=null&&d.parcTotal!=null&&d.parcRest>0){ const dMesIdx=MESES.indexOf(d.mes||'Janeiro'); const globalStart=dMesIdx; const globalEnd=globalStart+(d.parcRest-1); return globalMesIdx>=globalStart&&globalMesIdx<=globalEnd; } return true; } return true; });
@@ -1496,11 +1693,135 @@ function renderFinanceiro(){
   const barColors=catEntries.map(([c])=>CAT_COLORS[c]||'#9CA3AF');
   barFinInst=new Chart(document.getElementById('barFinanceiro'),{type:'bar',data:{labels:barLabels,datasets:[{label:'R$',data:barVals,backgroundColor:barColors.map(c=>c+'33'),borderColor:barColors,borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'R$'+Math.round(v/1000)+'k'},grid:{color:'#E4E4E0'}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
   const recMap={mensal:'🔄 Mensal',anual:'📅 Anual',unica:'1️⃣ Única'};
-  document.getElementById('desp-tbody').innerHTML=despMes.map(d=>{ const pago=isDespPago(d,mesSelecionado); const paNoMes=getParcAtualNoMes(d,mesIdx); const parcLabel=paNoMes&&d.parcTotal?`${paNoMes}/${d.parcTotal} <span style="color:var(--red);font-size:10px">(${d.parcTotal-paNoMes+1} rest.)</span>`:d.parcAtual&&d.parcTotal?`${d.parcAtual}/${d.parcTotal}`:'—'; return `<tr class="${pago?'desp-row-paga':''}"><td><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;background:${CAT_COLORS[d.cat]||'#9CA3AF'}22;color:${CAT_COLORS[d.cat]||'#9CA3AF'}">${d.cat}</span></td><td style="font-weight:500">${d.nome}</td><td style="color:var(--text2);font-size:11px">${d.obs||'—'}</td><td style="text-align:center;font-size:12px">dia ${d.dia}</td><td style="font-size:11px">${parcLabel}</td><td style="font-size:11px;color:var(--text2)">${recMap[d.rec]||d.rec}</td><td class="td-r">${fmt(d.valor)}</td><td style="text-align:center"><button class="ico-btn paid-btn${pago?' active':''}" title="${pago?'Reabrir '+mesSelecionado:'Marcar '+mesSelecionado+' como pago'}" onclick="toggleDespPago(${d.id},'${mesSelecionado}')"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="20 6 9 17 4 12"/></svg></button></td><td><button class="ico-btn" onclick="deleteDespesa(${d.id})" title="Excluir despesa"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button></td></tr>`; }).join('')||`<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:24px">Nenhuma despesa para ${mesSelecionado}.</td></tr>`;
+  document.getElementById('desp-tbody').innerHTML=despMes.map(d=>{ const pago=isDespPago(d,mesSelecionado); const paNoMes=getParcAtualNoMes(d,mesIdx); const parcLabel=paNoMes&&d.parcTotal?`${paNoMes}/${d.parcTotal} <span style="color:var(--red);font-size:10px">(${d.parcTotal-paNoMes+1} rest.)</span>`:d.parcAtual&&d.parcTotal?`${d.parcAtual}/${d.parcTotal}`:'—'; return `<tr class="${pago?'desp-row-paga':''}"><td><span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;background:${CAT_COLORS[d.cat]||'#9CA3AF'}22;color:${CAT_COLORS[d.cat]||'#9CA3AF'}">${d.cat}</span></td><td style="font-weight:500">${d.nome}</td><td style="color:var(--text2);font-size:11px">${d.obs||'—'}</td><td style="text-align:center;font-size:12px">dia ${d.dia}</td><td style="font-size:11px">${parcLabel}</td><td style="font-size:11px;color:var(--text2)">${recMap[d.rec]||d.rec}</td><td class="td-r">${fmt(d.valor)}</td><td style="text-align:center"><button class="ico-btn paid-btn${pago?' active':''}" title="${pago?'Reabrir '+mesSelecionado:'Marcar '+mesSelecionado+' como pago'}" onclick="toggleDespPago(${d.id},'${mesSelecionado}')"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5"><polyline points="20 6 9 17 4 12"/></svg></button></td><td style="display:flex;gap:4px"><button class="ico-btn" onclick="openEditDespesa(${d.id})" title="Editar despesa"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="ico-btn" onclick="deleteDespesa(${d.id})" title="Excluir despesa"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button></td></tr>`; }).join('')||`<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:24px">Nenhuma despesa para ${mesSelecionado}.</td></tr>`;
+}
+
+
+/* ══ ALERTAS DE ATUALIZAÇÃO ══ */
+function renderAlertBanner(){
+  const area = document.getElementById('alert-banner-area');
+  if(!area) return;
+
+  const hoje = HOJE;
+  const MES_ATUAL_IDX = 5; // Junho
+
+  // Cartões que precisam de atenção
+  const vencendo = bills.filter(b=>!b.pago && daysLeft(b.venc)<=5 && daysLeft(b.venc)>=0);
+  const vencidos  = bills.filter(b=>!b.pago && daysLeft(b.venc)<0);
+  // Cartões pagos há mais de 25 dias (provavelmente chegou nova fatura)
+  const precisamAtualizar = bills.filter(b=>b.pago && b.parcelado>0);
+
+  let html = '';
+
+  if(vencidos.length>0){
+    html += `<div class="alert-banner red">
+      <div class="alert-icon">🚨</div>
+      <div style="flex:1">
+        <div class="alert-title">${vencidos.length} fatura(s) vencida(s) — pague agora para evitar juros!</div>
+        <div class="alert-sub">Clique em um cartão para abrir e marcar como paga.</div>
+        <div class="alert-cards">${vencidos.map(b=>`<button class="alert-card-tag" style="background:${bankColor(b.banco)}22;color:${bankColor(b.banco)}" onclick="openEdit(${b.id})">${b.banco.split(' ')[0]} — ${fmt(b.valor)}</button>`).join('')}</div>
+      </div>
+    </div>`;
+  }
+
+  if(vencendo.length>0){
+    html += `<div class="alert-banner warn">
+      <div class="alert-icon">⚠️</div>
+      <div style="flex:1">
+        <div class="alert-title">${vencendo.length} fatura(s) vencem em até 5 dias!</div>
+        <div class="alert-sub">Programe o pagamento para não perder o prazo.</div>
+        <div class="alert-cards">${vencendo.map(b=>`<button class="alert-card-tag" style="background:${bankColor(b.banco)}22;color:${bankColor(b.banco)}" onclick="openEdit(${b.id})">${b.banco.split(' ')[0]} — vence ${fmtDate(b.venc)}</button>`).join('')}</div>
+      </div>
+    </div>`;
+  }
+
+  if(precisamAtualizar.length>0){
+    html += `<div class="alert-banner green">
+      <div class="alert-icon">🔄</div>
+      <div style="flex:1">
+        <div class="alert-title">${precisamAtualizar.length} cartão(ões) pago(s) — atualize com a nova fatura quando chegar</div>
+        <div class="alert-sub">Use a atualização rápida acima ou clique no ✏️ do cartão para inserir o valor da próxima fatura.</div>
+        <div class="alert-cards">${precisamAtualizar.map(b=>`<button class="alert-card-tag" style="background:${bankColor(b.banco)}22;color:${bankColor(b.banco)}" onclick="quickSelecionarCartao(${b.id})">${b.banco.split(' ')[0]}</button>`).join('')}</div>
+      </div>
+    </div>`;
+  }
+
+  if(!html){
+    const total = bills.filter(b=>!b.pago).reduce((s,b)=>s+b.valor,0);
+    if(total>0){
+      html = `<div class="alert-banner green"><div class="alert-icon">✅</div><div><div class="alert-title">Tudo em dia — ${bills.filter(b=>!b.pago).length} fatura(s) em aberto no valor de ${fmt(total)}</div><div class="alert-sub">Nenhuma vencida ou vencendo nos próximos 5 dias.</div></div></div>`;
+    } else {
+      html = `<div class="alert-banner green"><div class="alert-icon">🎉</div><div><div class="alert-title">Todas as faturas estão pagas!</div><div class="alert-sub">Aguarde as novas faturas e atualize quando chegarem.</div></div></div>`;
+    }
+  }
+
+  area.innerHTML = html;
+}
+
+/* ══ ATUALIZAÇÃO RÁPIDA ══ */
+function quickPreencheSelects(){
+  const sel = document.getElementById('q-banco');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">Selecione o cartão...</option>' +
+    bills.map(b=>`<option value="${b.id}">${b.banco}${b.final?' ('+b.final+')':''} — ${b.pago?'✓ pago':fmt(b.valor)}</option>`).join('');
+}
+
+function quickPreencheCartao(){
+  const id = parseInt(document.getElementById('q-banco').value);
+  const b = bills.find(x=>x.id===id);
+  const prev = document.getElementById('q-preview');
+  if(!b){ if(prev) prev.textContent=''; return; }
+  document.getElementById('q-valor').value = b.valor || '';
+  document.getElementById('q-venc').value = b.venc || '';
+  document.getElementById('q-parcelado').value = b.parcelado || 0;
+  if(prev) prev.innerHTML = `Cartão atual: <strong>${b.banco}</strong> · Fatura: <strong>${fmt(b.valor)}</strong> · Parcelado futuro: <strong>${fmt(b.parcelado||0)}</strong> · Status: <strong>${b.pago?'✓ Paga':'Em aberto'}</strong>`;
+}
+
+function quickSelecionarCartao(id){
+  const sel = document.getElementById('q-banco');
+  if(sel){ sel.value = id; quickPreencheCartao(); }
+  // Scroll to top
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function quickSalvar(){
+  const id = parseInt(document.getElementById('q-banco').value);
+  if(!id){ showToast('Selecione um cartão.'); return; }
+  const b = bills.find(x=>x.id===id);
+  if(!b){ showToast('Cartão não encontrado.'); return; }
+  const valor = parseFloat(document.getElementById('q-valor').value)||0;
+  const venc  = document.getElementById('q-venc').value;
+  const parcelado = parseFloat(document.getElementById('q-parcelado').value)||0;
+  if(!valor || !venc){ showToast('Preencha valor e vencimento.'); return; }
+
+  // Detecta mês pelo vencimento
+  const vencDate = new Date(venc+'T12:00:00');
+  const mesNovo = MESES[vencDate.getMonth()];
+
+  b.valor = valor;
+  b.venc  = venc;
+  b.parcelado = parcelado;
+  b.avista = Math.max(0, valor - parcelado);
+  b.mes   = mesNovo;
+  b.pago  = false;
+  b.usado = valor;
+  b._usadoAntes = valor;
+  b.min   = Math.round(valor * 0.15 * 100)/100;
+
+  save(); renderAll();
+  showToast('✓ '+b.banco+' atualizado para '+fmt(valor)+' — '+mesNovo+'!');
+
+  // Limpa campos
+  document.getElementById('q-banco').value = '';
+  document.getElementById('q-valor').value = '';
+  document.getElementById('q-venc').value = '';
+  document.getElementById('q-parcelado').value = '';
+  document.getElementById('q-preview').textContent = '';
 }
 
 function renderAll(){
   buildCrono(); renderMetrics();
+  renderAlertBanner(); quickPreencheSelects();
   renderCardMesPills(); renderCards();
   renderCronoTable();
   renderBankPills(); renderTxns();
