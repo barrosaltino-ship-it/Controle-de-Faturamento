@@ -350,9 +350,11 @@ select:focus,input:focus{border-color:var(--blue)}
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       Cronograma de parcelas futuras
     </div>
+    <div class="filter-pills" id="crono-bank-pills"></div>
+    <div id="crono-resumo" style="font-size:11px;color:var(--text2);margin-bottom:12px"></div>
     <div class="crono-table-wrap">
       <table>
-        <thead><tr><th>Banco</th><th>Descrição</th><th>Parcela</th><th>Categoria</th><th style="text-align:right">Valor</th></tr></thead>
+        <thead><tr><th>Banco</th><th>Descrição</th><th>Parcela</th><th>Categoria</th><th style="text-align:right">Valor parcela</th></tr></thead>
         <tbody id="crono-tbody"></tbody>
       </table>
     </div>
@@ -1020,9 +1022,9 @@ function renderCards(){
     if(lbl) lbl.textContent='';
 
   } else if(cardTab==='pagos'){
-    // Pagos: mostra faturas marcadas como pagas, filtradas pelo mês selecionado
-    list=bills.filter(b=>b.pago && b.mes===cardMes);
-    const total=list.reduce((s,b)=>s+b.valor,0);
+    // Pagos: filtra pelo mês/ano em que a fatura foi PAGA
+    list=bills.filter(b=>b.pago && (b.mesPago||b.mes)===cardMes && (b.anoPago||2026)===cardAno);
+    const total=list.reduce((s,b)=>s+(b._valorPago||b.valor),0);
     if(lbl) lbl.innerHTML=`<strong>${list.length}</strong> fatura(s) paga(s) em <strong>${cardMes}/${cardAno}</strong>${total>0?` &nbsp;·&nbsp; Total pago: <strong style="color:var(--green-text)">${fmt(total)}</strong>`:''}`;
 
   } else if(cardTab==='avencer'){
@@ -1065,26 +1067,47 @@ function renderCards(){
     return;
   }
 
+  const junG=5;
+  const targetG=(cardAno-2026)*12+MESES.indexOf(cardMes);
+  const diffMes=targetG-junG;
+
   document.getElementById('bill-grid').innerHTML=list.map(b=>{
     const pct=b.limite>0?Math.min(Math.round((b.usado/b.limite)*100),100):0;
     const fillCol=pct>85?'#DC2626':pct>65?'#D97706':'#16A34A';
     const d=daysLeft(b.venc);
     const vencStr=b.pago?'✓ paga':(d<0?`venceu ${fmtDate(b.venc)}`:`vence ${fmtDate(b.venc)}`);
 
-    // Valor exibido: pagos→valor pago; avencer futuro→parcelas; demais→valor normal
-    const junG=5, targetG=(cardAno-2026)*12+MESES.indexOf(cardMes), diff=targetG-junG;
-    let valorExibir=b.valor, valorLabel='';
-    if(b.pago){
-      valorExibir=b._usadoAntes>0?(b.parcelado||0):b.valor;
-      valorLabel=b.parcelado>0?'Próxima ~':'';
-    } else if(cardTab==='avencer'&&diff>0){
-      valorExibir=b.txns.reduce((s,t)=>{
-        if(!t.parc) return s;
-        const pm=t.parc.match(/(\d+)\/(\d+)/);
-        if(pm){ const c=parseInt(pm[1]),tt=parseInt(pm[2]); if(diff>=1&&diff<=(tt-c)) return s+t.val; }
-        return s;
-      },0);
-      valorLabel='Parcelas ~';
+    // ── Calcula valor correto por contexto ──
+    let valorExibir=b.valor;
+    let subLabel=''; // legenda abaixo do valor
+
+    if(cardTab==='todos'){
+      if(b.pago){
+        // Pago: mostra só as parcelas futuras que restam (próxima fatura estimada)
+        valorExibir = b.parcelado||0;
+        subLabel = valorExibir>0 ? 'estimativa próx. fatura' : 'sem parcelas futuras';
+      } else {
+        valorExibir = b.valor;
+        subLabel = vencStr;
+      }
+    } else if(cardTab==='pagos'){
+      // Aba pagos: mostra o valor que foi pago
+      valorExibir = b._usadoAntes || b.valor;
+      subLabel = `pago em ${b.mes}/${b.anoPago||2026}`;
+    } else if(cardTab==='avencer'){
+      if(diffMes<=0){
+        valorExibir = b.valor;
+        subLabel = vencStr;
+      } else {
+        // Calcula valor real das parcelas naquele mês específico
+        valorExibir = b.txns.reduce((s,t)=>{
+          if(!t.parc) return s;
+          const pm=t.parc.match(/(\d+)\/(\d+)/);
+          if(pm){ const c=parseInt(pm[1]),tt=parseInt(pm[2]); if(diffMes>=1&&diffMes<=(tt-c)) return s+t.val; }
+          return s;
+        },0);
+        subLabel = `parcelas em ${cardMes}/${cardAno}`;
+      }
     }
 
     return `<div class="bill-card${b.pago?' paid':''}" onclick="openModal(${b.id})">
@@ -1095,8 +1118,8 @@ function renderCards(){
           <div class="card-num">${b.final||'—'}</div>
         </div>
         <div class="card-top-right">
-          <div class="card-amount">${valorLabel}${fmt(valorExibir)}</div>
-          <div class="card-venc">${vencStr}</div>
+          <div class="card-amount">${fmt(valorExibir)}</div>
+          <div class="card-venc">${subLabel}</div>
         </div>
       </div>
       ${b.limite>0?`
@@ -1105,7 +1128,7 @@ function renderCards(){
       <div class="limit-total">Limite total: ${fmt(b.limite)}</div>`:'<div style="height:8px"></div>'}
       <div class="badge-row">
         ${b.pago
-          ? `<span class="badge badge-green">✓ Paga — ${b.mes}/${cardAno}</span><span class="badge badge-purple">Parcelas futuras: ${fmt(b.parcelado||0)}</span>`
+          ? `<span class="badge badge-green">✓ Paga — ${b.mes}/${b.anoPago||2026}</span><span class="badge badge-purple">Parcelas futuras: ${fmt(b.parcelado||0)}</span>`
           : `<span class="badge badge-blue">À vista: ${fmt(b.avista||0)}</span><span class="badge badge-purple">Parcelado futuro: ${fmt(b.parcelado||0)}</span>`
         }
       </div>
@@ -1150,16 +1173,57 @@ function renderCardMesPills(){
     var isSel=m===cardMes;
     var cls='pill'+(isSel?' active':'');
     // No modo pagos: destaca meses que têm faturas pagas
-    var temPagos = bills.some(b=>b.pago && b.mes===m && (cardAno===2026));
+    var temPagos = bills.some(b=>b.pago && (b.mesPago||b.mes)===m && (b.anoPago||2026)===cardAno);
     var dot = (cardTab==='pagos' && temPagos && !isSel) ? ' 🟢' : '';
     return '<button class="'+cls+'" data-m="'+m+'" onclick="setCardMes(this.dataset.m)">'+MESES_S[i]+dot+'</button>';
   }).join('');
 }
 
+let cronoBankFilter='all';
+
+function renderCronoBankPills(){
+  const banks=['all'].concat([...new Set(bills.map(b=>b.banco))]);
+  const el=document.getElementById('crono-bank-pills');
+  if(!el) return;
+  el.innerHTML=banks.map(b=>{
+    const cls='pill'+(b===cronoBankFilter?' active':'');
+    const lbl=b==='all'?'Todos':b;
+    return '<button class="'+cls+'" data-bank="'+b+'" onclick="setCronoFilter(this.dataset.bank,this)">'+lbl+'</button>';
+  }).join('');
+}
+
+function setCronoFilter(bank,btn){
+  cronoBankFilter=bank;
+  document.querySelectorAll('#crono-bank-pills .pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderCronoTable();
+}
+
 function renderCronoTable(){
+  renderCronoBankPills();
   const rows=[];
-  bills.forEach(b=>{ b.txns.forEach(t=>{ if(t.parc){ var m=t.parc.match(/([0-9]+)\/([0-9]+)/); if(m&&parseInt(m[1])<parseInt(m[2])) rows.push({banco:b.banco,desc:t.desc,parc:t.parc,cat:t.cat,val:t.val}); } }); });
-  document.getElementById('crono-tbody').innerHTML=rows.map(r=>'<tr><td>'+r.banco+'</td><td>'+r.desc+'</td><td><span class="ctag">'+r.parc+'</span></td><td><span class="ctag">'+r.cat+'</span></td><td class="td-r">'+fmt(r.val)+'</td></tr>').join('');
+  bills.forEach(b=>{
+    if(cronoBankFilter!=='all'&&b.banco!==cronoBankFilter) return;
+    b.txns.forEach(t=>{
+      if(t.parc){
+        const m=t.parc.match(/(\d+)\/(\d+)/);
+        if(m&&parseInt(m[1])<parseInt(m[2])){
+          const cur=parseInt(m[1]),tot=parseInt(m[2]);
+          rows.push({banco:b.banco,desc:t.desc,parc:t.parc,cat:t.cat,val:t.val,rest:tot-cur});
+        }
+      }
+    });
+  });
+  const totalVal=rows.reduce((s,r)=>s+r.val,0);
+  const resumo=document.getElementById('crono-resumo');
+  if(resumo){
+    resumo.innerHTML=rows.length
+      ? '<strong>'+rows.length+'</strong> parcela(s) em aberto'+(cronoBankFilter!=='all'?' — '+cronoBankFilter:'')+' &nbsp;&middot;&nbsp; Valor mensal: <strong style="color:var(--red)">'+fmt(totalVal)+'</strong>'
+      : 'Nenhuma parcela futura encontrada.';
+  }
+  document.getElementById('crono-tbody').innerHTML=rows.length
+    ? rows.map(r=>'<tr><td style="font-weight:500">'+r.banco+'</td><td>'+r.desc+'</td><td><span class="ctag">'+r.parc+'</span> <span style="font-size:10px;color:var(--text3)">'+r.rest+' rest.</span></td><td><span class="ctag">'+r.cat+'</span></td><td class="td-r">'+fmt(r.val)+'</td></tr>').join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px">Nenhuma parcela futura'+(cronoBankFilter!=='all'?' para '+cronoBankFilter:'')+'.</td></tr>';
 }
 
 function renderBankPills(){
@@ -1235,13 +1299,15 @@ function togglePago(id){
   const b=bills.find(x=>x.id===id);if(!b)return;
   b.pago=!b.pago;
   if(b.pago){
-    // Ao pagar: salva o mês/ano do pagamento, guarda usado e zera (limite volta)
-    b.mesPago = b.mes;
-    b.anoPago = 2026;
+    // Salva: valor pago, mês/ano do pagamento, usado original
+    b._valorPago  = b.valor;
     b._usadoAntes = b.usado;
+    b.mesPago     = b.mes;
+    b.anoPago     = 2026;
+    // Zera usado → só fica o parcelado futuro (que ainda ocupa limite)
     b.usado = b.parcelado||0;
   } else {
-    // Ao reabrir: restaura o usado original
+    // Reabre: restaura usado original
     b.usado = b._usadoAntes || b.valor;
   }
   save();renderAll();
